@@ -29,7 +29,7 @@
 - [SQLite Tutorial SQLite Aggregate Functions](https://www.sqlitetutorial.net/sqlite-aggregate-functions/)
 - [SQLite Tutorial main page](https://www.sqlitetutorial.net/)
 - [SQLite3 Official docs](https://docs.python.org/3.12/library/sqlite3.html)
-- [Web Site Name](http://url.link.goes.here)
+- [YouTube SQLite in Python || Python Tutorial || Learn Python Programming](https://www.youtube.com/watch?v=c8yHTlrs9EA)
 - [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
