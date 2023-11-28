@@ -1,7 +1,5 @@
 # Overview
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
-
 {Provide a description of the software that you wrote and how it integrates with a SQL Relational Database. Describe how to use your program.}
 
 {Describe your purpose for writing this software.}
@@ -24,8 +22,17 @@
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-
+- [Wikipedia Relational database Page](https://en.wikipedia.org/wiki/Relational_database)
+- [Oracle What is a Relational Database](https://www.oracle.com/database/what-is-a-relational-database/)
+- [Ws Schools SQL Tutorial](https://www.w3schools.com/sql/)
+- [SQLite Tutorial SQLite Inner Join](https://www.sqlitetutorial.net/sqlite-inner-join/)
+- [SQLite Tutorial SQLite Aggregate Functions](https://www.sqlitetutorial.net/sqlite-aggregate-functions/)
+- [SQLite Tutorial main page](https://www.sqlitetutorial.net/)
+- [SQLite3 Official docs](https://docs.python.org/3.12/library/sqlite3.html)
+- [Web Site Name](http://url.link.goes.here)
+- [Web Site Name](http://url.link.goes.here)
+- [Web Site Name](http://url.link.goes.here)
+- [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
 
