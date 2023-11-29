@@ -30,7 +30,7 @@
 - [SQLite Tutorial main page](https://www.sqlitetutorial.net/)
 - [SQLite3 Official docs](https://docs.python.org/3.12/library/sqlite3.html)
 - [YouTube SQLite in Python || Python Tutorial || Learn Python Programming](https://www.youtube.com/watch?v=c8yHTlrs9EA)
-- [Web Site Name](http://url.link.goes.here)
+- [O'Reilly Introduction to SQLite Databases for Python Programming](https://learning.oreilly.com/course/introduction-to-sqlite/9781838982867/)
 - [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
 - [Web Site Name](http://url.link.goes.here)
