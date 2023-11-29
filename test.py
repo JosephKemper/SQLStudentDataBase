@@ -43,7 +43,7 @@ my_cursor = connection.cursor()
 # my_cursor.executemany("INSERT INTO customers VALUES (?,?,?)", many_customers)
 
 # Query the database
-my_cursor.execute("SELECT * FROM customers")
+my_cursor.execute("SELECT rowid, * FROM customers")
 # my_cursor.fetchone() # Get one from DB
 # my_cursor.fetchmany(3) # Get 3 from DB Gets the first 3 entered into the list
 customers = my_cursor.fetchall() # Get everything from DB 
@@ -51,7 +51,8 @@ customers = my_cursor.fetchall() # Get everything from DB
 # Data can be accessed in the same way a list/tuple can
 
 for customer in customers:
-    print(customer[0] + " " + customer[1] + "\t" + customer[2])
+    print (f"{customer[0]} {customer[1]} {customer [2]} {customer[3]}")
+#    print(customer)
 
 # SQLite data types
 # NULL - Does it exist or not
