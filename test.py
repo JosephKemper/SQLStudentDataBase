@@ -1,69 +1,66 @@
 import sqlite3
 
-# To store in memory for one time use
-#connection = sqlite3.connect(":memory:")
+# This is a decorator function that wraps around other functions to handle database connection and disconnection.
+def function_template(function):
+    def wrapper(*args, **kwargs):
+        # Connect to the SQLite database:
+        connection = sqlite3.connect('customer.db')
+        # Create a cursor object which allows us to execute SQL commands:
+        cursor = connection.cursor()
 
-# To store for permanent use
-connection = sqlite3.connect("customer.db")
+        # Call the function passed to the decorator, passing the cursor and any other arguments it needs:
+        result = function(cursor, *args, **kwargs)
 
-# Create a cursor
-my_cursor = connection.cursor()
+        # Commit any changes made during the function call and close the connection to the database:
+        connection.commit()
+        connection.close()
+        
+        # Return the result of the function call:
+        return result
+    
+    # Return the new function that includes database connection, function call, and database disconnection:
+    return wrapper
 
-# Create a table
-# Triple quotes lets the table entry be completed over multiple lines. 
-#my_cursor.execute("""CREATE TABLE customers (
-#                  first_name text,
-#                  last_name text,
-#                  email text
-#                  )
-#""")
+# This function queries the database and prints all records, or a provided subset of records.
+@function_template
+def show_all(cursor, customers=None):
+    if customers is None:
+        # If no subset of customers is provided, select all customers from the database:
+        cursor.execute("SELECT rowid, * FROM customers")
+        customers = cursor.fetchall()
 
-# For inserting one name into a database
-# SQL commands are always in upper case
-# my_cursor.execute("INSERT INTO customers VALUES ('John', 'Elder', 'john@codemy.com')")
-# my_cursor.execute("INSERT INTO customers VALUES ('Joseph', 'Kemper', 'JosephKemper@gmail.com')")
+    # Print each customer record:
+    for customer in customers:
+        print(customer)
 
-# List of many names
-# many_customers = [
-#     ('John', 'Doe', 'john.doe@example.com'),
-#     ('Jane', 'Doe', 'jane.doe@example.com'),
-#     ('Jim', 'Brown', 'jim.brown@example.com'),
-#     ('Jill', 'Smith', 'jill.smith@example.com'),
-#     ('Jack', 'Johnson', 'jack.johnson@example.com'),
-#     ('Julia', 'Davis', 'julia.davis@example.com'),
-#     ('Jerry', 'Miller', 'jerry.miller@example.com'),
-#     ('Jasmine', 'Wilson', 'jasmine.wilson@example.com'),
-#     ('Jake', 'Moore', 'jake.moore@example.com'),
-#     ('Joyce', 'Taylor', 'joyce.taylor@example.com'),
-#     ('Joe', 'Anderson', 'joe.anderson@example.com'),
-#     ('Jenny', 'Thomas', 'jenny.thomas@example.com')
-# ]
+# This function adds a single customer record to the database.
+@function_template
+def add_customer(cursor, first, last, email):
+    cursor.execute("INSERT INTO customers VALUES (?, ?, ?)", (first, last, email))
 
-# To add in many names into a customer list
-# my_cursor.executemany("INSERT INTO customers VALUES (?,?,?)", many_customers)
+# This function adds a list of customer records to the database.
+@function_template
+def add_customer_list(cursor, list):
+    cursor.executemany("INSERT INTO customers VALUES (?, ?, ?)", list)
 
-# Query the database
-my_cursor.execute("SELECT rowid, * FROM customers")
-# my_cursor.fetchone() # Get one from DB
-# my_cursor.fetchmany(3) # Get 3 from DB Gets the first 3 entered into the list
-customers = my_cursor.fetchall() # Get everything from DB 
-# Data can is stored in a tuple inside of a list. 
-# Data can be accessed in the same way a list/tuple can
+# This function deletes a single customer record from the database.
+@function_template
+def delete_customer(cursor, rowid):
+    cursor.execute("DELETE from customers WHERE rowid = (?)", (rowid,))
 
-for customer in customers:
-    print (f"{customer[0]} {customer[1]} {customer [2]} {customer[3]}")
-#    print(customer)
+# This function looks up customers based on a provided search item and search text, and then prints the found customers.
+@function_template
+def lookup_customer (cursor, search_item, search_text):
+    cursor.execute(f"SELECT * from customers WHERE {search_item} = (?)", (search_text,))
+    found_customers = cursor.fetchall()
 
-# SQLite data types
-# NULL - Does it exist or not
-# INTEGER - number
-# REAL - decimal
-# TEXT - text string
-# BLOB - everything else
+    show_all(found_customers)
 
-# Commit our command
-connection.commit()
-
-# Close our connection #Best practice
-connection.close()
+# This function prints the names of all columns in the 'customers' table.
+@function_template
+def print_column_names(cursor):
+    cursor.execute("PRAGMA table_info(customers)")
+    columns = cursor.fetchall()
+    for column in columns:
+        print(column[1])
 
