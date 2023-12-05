@@ -8,6 +8,15 @@ def function_template(function):
         # Create a cursor object which allows us to execute SQL commands:
         cursor = connection.cursor()
 
+        # Make sure the table exists properly
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS students (
+                first_name TEXT,
+                last_name TEXT,
+                email TEXT
+            )
+        ''')
+
         # Call the function passed to the decorator, passing the cursor and any other arguments it needs:
         result = function(cursor, *args, **kwargs)
 
