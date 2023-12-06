@@ -8,6 +8,15 @@ def function_template(function):
         # Create a cursor object which allows us to execute SQL commands:
         cursor = connection.cursor()
 
+        # Make sure the table exists properly
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS students (
+                first_name TEXT,
+                last_name TEXT,
+                email TEXT
+            )
+        ''')
+
         # Call the function passed to the decorator, passing the cursor and any other arguments it needs:
         result = function(cursor, *args, **kwargs)
 
@@ -48,10 +57,10 @@ def add_students_list(cursor, list):
 def delete_student(cursor, rowid):
     cursor.execute("DELETE from students WHERE rowid = (?)", (rowid,))
 
-# This function looks up students based on a provided search item and search text, and then prints the found students.
+# This function looks up students based on a provided column they wish to search and search text, and then prints the found students.
 @function_template
-def lookup_student (cursor, search_item, search_text):
-    cursor.execute(f"SELECT * from students WHERE {search_item} = (?)", (search_text,))
+def custom_search (cursor, column_name, search_text):
+    cursor.execute(f"SELECT * from students WHERE {column_name} = (?)", (search_text,))
     found_students = cursor.fetchall()
 
     show_all(found_students)
@@ -64,3 +73,9 @@ def print_column_names(cursor):
     for column in columns:
         print(column[1])
 
+# Lookup record by rowid and return as a tuple or none if record does not exist
+@function_template
+def lookup_by_rowid(cursor, rowid):
+    cursor.execute("SELECT first_name, last_name, email FROM students WHERE rowid = ?", (rowid,))
+    record = cursor.fetchone()
+    return record
