@@ -1,4 +1,5 @@
 import sqlite3
+import csv
 
 # This is a decorator function that wraps around other functions to handle database connection and disconnection.
 def function_template(function):
@@ -47,10 +48,24 @@ def show_all(cursor, students=None):
 def add_student(cursor, first, last, email):
     cursor.execute("INSERT INTO students VALUES (?, ?, ?)", (first, last, email))
 
-# This function adds a list of students records to the database.
+# This function adds a list of students records pulled from a file to the database.
 @function_template
-def add_students_list(cursor, list):
-    cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", list)
+def add_students_from_csv_file(database_cursor, csv_filename):
+    try:
+        with open(csv_filename, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            csv_headers = next(csv_reader)  # Read the header row
+            if csv_headers != ['first_name', 'last_name', 'email']:
+                print("Invalid file format. The file must have a header row with 'first_name', 'last_name', and 'email'.")
+                return
+            student_data = list(csv_reader)
+        database_cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", student_data)
+    except FileNotFoundError:
+        print(f"File not found: {csv_filename}")
+    except csv.Error as csv_error:
+        print(f"Error reading file: {csv_error}")
+    except Exception as unexpected_error:
+        print(f"Unexpected error: {unexpected_error}")
 
 # This function deletes a single students record from the database.
 @function_template
@@ -79,3 +94,4 @@ def lookup_by_rowid(cursor, rowid):
     cursor.execute("SELECT first_name, last_name, email FROM students WHERE rowid = ?", (rowid,))
     record = cursor.fetchone()
     return record
+
