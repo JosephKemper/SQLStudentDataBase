@@ -12,6 +12,7 @@ def function_template(function):
         # Make sure the table exists properly
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS students (
+                student_id INTEGER,
                 first_name TEXT,
                 last_name TEXT,
                 email TEXT
@@ -45,8 +46,8 @@ def show_all(cursor, students=None):
 
 # This function adds a single students record to the database.
 @function_template
-def add_student(cursor, first, last, email):
-    cursor.execute("INSERT INTO students VALUES (?, ?, ?)", (first, last, email))
+def add_student(cursor, student_id, first, last, email):
+    cursor.execute("INSERT INTO students VALUES (?, ?, ?, ?)", (student_id, first, last, email))
 
 # This function adds a list of students records pulled from a file to the database.
 @function_template
@@ -54,12 +55,12 @@ def add_students_from_csv_file(cursor, csv_filename):
     try:
         with open(csv_filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
-            csv_headers = next(csv_reader)  # Read the header row
-            if csv_headers != ['first_name', 'last_name', 'email']:
-                print("Invalid file format. The file must have a header row with 'first_name', 'last_name', and 'email'.")
+            csv_headers = next(csv_reader)
+            if csv_headers != ['student_id', 'first_name', 'last_name', 'email']:
+                print("Invalid file format. The file must have a header row with 'student_id', 'first_name', 'last_name', and 'email'.")
                 return
             student_data = list(csv_reader)
-        cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", student_data)
+        cursor.executemany("INSERT INTO students VALUES (?, ?, ?, ?)", student_data)
         return len(student_data)
     except FileNotFoundError:
         print(f"File not found: {csv_filename}")
