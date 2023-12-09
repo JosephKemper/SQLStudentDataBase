@@ -50,7 +50,7 @@ def add_student(cursor, first, last, email):
 
 # This function adds a list of students records pulled from a file to the database.
 @function_template
-def add_students_from_csv_file(database_cursor, csv_filename):
+def add_students_from_csv_file(cursor, csv_filename):
     try:
         with open(csv_filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
@@ -59,7 +59,8 @@ def add_students_from_csv_file(database_cursor, csv_filename):
                 print("Invalid file format. The file must have a header row with 'first_name', 'last_name', and 'email'.")
                 return
             student_data = list(csv_reader)
-        database_cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", student_data)
+        cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", student_data)
+        return len(student_data)
     except FileNotFoundError:
         print(f"File not found: {csv_filename}")
     except csv.Error as csv_error:
@@ -95,3 +96,28 @@ def lookup_by_rowid(cursor, rowid):
     record = cursor.fetchone()
     return record
 
+@function_template
+def delete_all_students(cursor):
+    cursor.execute("DELETE FROM students")
+
+@function_template
+def modify_student(cursor, rowid, first=None, last=None, email=None):
+    # Check which fields are provided and build the SQL command accordingly
+    sql_command = "UPDATE students SET "
+    parameters = []
+    if first is not None:
+        sql_command += "first_name = ?, "
+        parameters.append(first)
+    if last is not None:
+        sql_command += "last_name = ?, "
+        parameters.append(last)
+    if email is not None:
+        sql_command += "email = ?, "
+        parameters.append(email)
+    # Remove the last comma and space
+    sql_command = sql_command[:-2]
+    # Add the WHERE clause
+    sql_command += " WHERE rowid = ?"
+    parameters.append(rowid)
+    # Execute the SQL command
+    cursor.execute(sql_command, parameters)
