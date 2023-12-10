@@ -16,6 +16,7 @@ def menu():
         print()
 
         choice = input("Enter your choice: ")
+        print()
         if choice == "1":
             print('Okay here is the Current Students in the Database')
             functions.show_all()
@@ -35,13 +36,13 @@ def menu():
                 print("All fields must be filled. Please try again.")
 
         elif choice == "3":
-            rowid = input("Please enter the row id of the student you wish to delete: ")
-            record = functions.lookup_by_rowid(rowid)
+            student_id = input("Please enter the student id of the student you wish to delete: ")
+            record = functions.lookup_by_student_id(student_id)
             if record is not None:
-                functions.delete_student(rowid)
+                functions.delete_student(student_id)
             else:
-                print("No student found with the given row id.")
-            print(f"We have removed {record[0]} {record[1]} from the database")
+                print("No student found with the given student id.")
+            print(f"We have removed {record[1]} {record[2]} from the database")
 
         elif choice == "4":
             print('The columns in the student database are as follows.')
@@ -78,7 +79,10 @@ def menu():
             functions.print_by_enrollment_date()
 
         elif choice == "9":
-            student_id = input()
+            student_id = input("Enter the student id of the student you wish to calculate the days remaining until estimated graduation for: ")
+            days_remaining = functions.calculate_days_until_graduation(student_id)
+            record = functions.lookup_by_student_id(student_id)
+            print(f"{record[1]} {record[2]} has {days_remaining} day/s remaining until his/her estimated graduation date.")
 
         elif choice == "10":
             print("Exiting the Program")

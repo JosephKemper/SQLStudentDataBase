@@ -95,8 +95,8 @@ def print_column_names(cursor):
 
 # Lookup record by rowid and return as a tuple or none if record does not exist
 @function_template
-def lookup_by_rowid(cursor, rowid):
-    cursor.execute("SELECT first_name, last_name, email FROM students WHERE rowid = ?", (rowid,))
+def lookup_by_student_id(cursor, student_id):
+    cursor.execute("SELECT * FROM students WHERE student_id = ?", (student_id,))
     record = cursor.fetchone()
     return record
 
