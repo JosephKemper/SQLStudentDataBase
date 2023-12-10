@@ -10,7 +10,10 @@ def menu():
         print("5. Add a list of students from a CSV file")
         print("6. Delete all students from database")
         print("7. Modify a single student")
-        print("8. Quit")
+        print("8. Print Student Database by enrollment date")
+        print("9. Calculate days until estimated graduation for student")
+        print("10. Quit")
+        print()
 
         choice = input("Enter your choice: ")
         if choice == "1":
@@ -23,8 +26,10 @@ def menu():
             first_name = input("First Name: ")
             last_name = input("Last Name: ")
             email = input("Email Address: ")
+            enrollment_date = input("Enrollment Date (YYYY-MM-DD): ")
+            estimated_graduation = input("Estimated Graduation (YYYY-MM-DD): ")
             if first_name and last_name and email:  # Check if all fields are filled
-                functions.add_student(student_id, first_name, last_name, email)
+                functions.add_student(student_id, first_name, last_name, email, enrollment_date, estimated_graduation)
                 print(f"We have added {first_name} {last_name} to the database")
             else:
                 print("All fields must be filled. Please try again.")
@@ -59,14 +64,23 @@ def menu():
                 print("Ok. No changes were made. Returning to menu.")
 
         elif choice == "7":
-            rowid = input("Please enter the row id of the student you wish to modify: ")
+            student_id = input("Please enter the student id of the student you wish to modify: ")
             first_name = input("New First Name (leave blank to keep the same): ")
             last_name = input("New Last Name (leave blank to keep the same): ")
             email = input("New Email Address (leave blank to keep the same): ")
-            functions.modify_student(rowid, first_name or None, last_name or None, email or None)
-            print(f"We have updated the student with row id {rowid} in the database")
+            enrollment_date = input("New Enrollment Date (leave blank to keep the same): ")
+            estimated_graduation_date = input("New Estimated Graduation Date (leave blank to keep the same): ")
+            functions.modify_student(student_id, first_name or None, last_name or None, email or None, enrollment_date or None, estimated_graduation_date or None)
+            print(f"We have updated the student with student id {student_id} in the database")
 
         elif choice == "8":
+            print("Here is the current students in the database listed by order they enrolled")
+            functions.print_by_enrollment_date()
+
+        elif choice == "9":
+            student_id = input()
+
+        elif choice == "10":
             print("Exiting the Program")
             break
         else:

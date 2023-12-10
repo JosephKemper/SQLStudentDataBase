@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import datetime
 
 # This is a decorator function that wraps around other functions to handle database connection and disconnection.
 def function_template(function):
@@ -12,10 +13,12 @@ def function_template(function):
         # Make sure the table exists properly
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS students (
-                student_id INTEGER,
+                student_id TEXT,
                 first_name TEXT,
                 last_name TEXT,
-                email TEXT
+                email TEXT,
+                enrollment_date TEXT,
+                estimated_graduation_date TEXT
             )
         ''')
 
@@ -46,8 +49,8 @@ def show_all(cursor, students=None):
 
 # This function adds a single students record to the database.
 @function_template
-def add_student(cursor, student_id, first, last, email):
-    cursor.execute("INSERT INTO students VALUES (?, ?, ?, ?)", (student_id, first, last, email))
+def add_student(cursor, student_id, first, last, email, enrollment_date, estimated_graduation_date):
+    cursor.execute("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?)", (student_id, first, last, email, enrollment_date, estimated_graduation_date))
 
 # This function adds a list of students records pulled from a file to the database.
 @function_template
@@ -56,11 +59,11 @@ def add_students_from_csv_file(cursor, csv_filename):
         with open(csv_filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             csv_headers = next(csv_reader)
-            if csv_headers != ['student_id', 'first_name', 'last_name', 'email']:
-                print("Invalid file format. The file must have a header row with 'student_id', 'first_name', 'last_name', and 'email'.")
+            if csv_headers != ['student_id', 'first_name', 'last_name', 'email', 'enrollment_date', 'estimated_graduation_date']:
+                print("Invalid file format. The file must have a header row with 'student_id', 'first_name', 'last_name', 'email', 'enrollment_date', and 'estimated_graduation_date'.")
                 return
             student_data = list(csv_reader)
-        cursor.executemany("INSERT INTO students VALUES (?, ?, ?, ?)", student_data)
+        cursor.executemany("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?)", student_data)
         return len(student_data)
     except FileNotFoundError:
         print(f"File not found: {csv_filename}")
@@ -102,7 +105,7 @@ def delete_all_students(cursor):
     cursor.execute("DELETE FROM students")
 
 @function_template
-def modify_student(cursor, rowid, first=None, last=None, email=None):
+def modify_student(cursor, student_id, first=None, last=None, email=None, enrollment_date=None, estimated_graduation_date=None):
     # Check which fields are provided and build the SQL command accordingly
     sql_command = "UPDATE students SET "
     parameters = []
@@ -115,10 +118,32 @@ def modify_student(cursor, rowid, first=None, last=None, email=None):
     if email is not None:
         sql_command += "email = ?, "
         parameters.append(email)
+    if enrollment_date is not None:
+        sql_command += "enrollment_date = ?, "
+        parameters.append(enrollment_date)
+    if estimated_graduation_date is not None:
+        sql_command += "estimated_graduation_date = ?, "
+        parameters.append(estimated_graduation_date)
     # Remove the last comma and space
     sql_command = sql_command[:-2]
     # Add the WHERE clause
-    sql_command += " WHERE rowid = ?"
-    parameters.append(rowid)
+    sql_command += " WHERE student_id = ?"
+    parameters.append(student_id)
     # Execute the SQL command
     cursor.execute(sql_command, parameters)
+
+@function_template
+def print_by_enrollment_date(cursor):
+    cursor.execute("SELECT * FROM students ORDER BY enrollment_date")
+    students = cursor.fetchall()
+    for student in students:
+        print(student)
+
+@function_template
+def calculate_days_until_graduation(cursor, student_id):
+    cursor.execute("SELECT estimated_graduation_date FROM students WHERE student_id = ?", (student_id,))
+    estimated_graduation_date = cursor.fetchone()[0]
+    estimated_graduation_date = datetime.datetime.strptime(estimated_graduation_date, "%Y-%m-%d").date()
+    current_date = datetime.date.today()
+    days_until_graduation = (estimated_graduation_date - current_date).days
+    return days_until_graduation
