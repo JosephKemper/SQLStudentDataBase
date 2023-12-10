@@ -4,7 +4,7 @@ This basic program manages a student database using SQLite. It provides CRUD ope
 
 My purposes for writing this program were simply to serve as a stating point for learning SQL and get introduced to relational database management. 
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/Yu12rn251CU)
 
 # Relational Database
 
