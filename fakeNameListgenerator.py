@@ -1,5 +1,6 @@
 import random
 import csv
+import datetime
 
 # List of sample first names and last names
 first_names = ["John", "Jane", "Sam", "Sally", "Mike", "Emily", "James", "Jennifer", "Robert", "Linda", "Joseph", "Deanne", "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Helen", "Ivan", "Judy", "Kevin", "Laura", "Mark", "Nancy", "Oscar", "Paula", "Quentin", "Rachel", "Steve", "Tina", "Ulysses", "Victoria", "Walter", "Xena", "Yvonne", "Zach", "Aaron", "Beth", "Carl", "Dana", "Ethan", "Fiona", "Gary", "Hannah", "Ian", "Julia", "Kyle", "Lily"]
@@ -17,6 +18,27 @@ def generate_student_id(existing_ids):
         if student_id not in existing_ids:
             return student_id
 
+# Function to generate a random date within the past 4 years
+def generate_enrollment_date():
+    end_date = datetime.date.today()
+    start_date = end_date - datetime.timedelta(days=4*365)
+    time_between_dates = end_date - start_date
+    days_between_dates = time_between_dates.days
+    random_number_of_days = random.randrange(days_between_dates)
+    random_date = start_date + datetime.timedelta(days=random_number_of_days)
+    return random_date
+
+# Function to generate a date that is 4 years in the future from a given date
+def generate_graduation_date(past_date):
+    future_date = past_date + datetime.timedelta(days=4*365)
+    return future_date
+
+# Generate a random date within the past 4 years
+enrollment_date = generate_enrollment_date()
+
+# Generate a date that is 4 years in the future from the randomly chosen date
+estimated_graduation_date = generate_graduation_date(enrollment_date)
+
 # Open the CSV file in write mode
 with open('students.csv', 'w', newline='') as file:
     writer = csv.writer(file)
@@ -30,4 +52,5 @@ with open('students.csv', 'w', newline='') as file:
         first_name = random.choice(first_names)
         last_name = random.choice(last_names)
         email = generate_email(first_name, last_name)
-        writer.writerow([student_id, first_name, last_name, email])
+        writer.writerow([student_id, first_name, last_name, email, enrollment_date, estimated_graduation_date])
+
