@@ -33,11 +33,7 @@ def generate_graduation_date(past_date):
     future_date = past_date + datetime.timedelta(days=4*365)
     return future_date
 
-# Generate a random date within the past 4 years
-enrollment_date = generate_enrollment_date()
 
-# Generate a date that is 4 years in the future from the randomly chosen date
-estimated_graduation_date = generate_graduation_date(enrollment_date)
 
 # Open the CSV file in write mode
 with open('students.csv', 'w', newline='') as file:
@@ -47,6 +43,12 @@ with open('students.csv', 'w', newline='') as file:
     # Generate and write 20 rows of fake data
     existing_ids = set()
     for _ in range(20):
+        # Generate a random date within the past 4 years
+        enrollment_date = generate_enrollment_date()
+
+        # Generate a date that is 4 years in the future from the randomly chosen date
+        estimated_graduation_date = generate_graduation_date(enrollment_date)
+        
         student_id = generate_student_id(existing_ids)
         existing_ids.add(student_id)
         first_name = random.choice(first_names)
