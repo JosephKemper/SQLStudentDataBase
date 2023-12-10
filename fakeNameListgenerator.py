@@ -43,7 +43,7 @@ estimated_graduation_date = generate_graduation_date(enrollment_date)
 with open('students.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     # Write the header row
-    writer.writerow(['student_id', 'first_name', 'last_name', 'email'])
+    writer.writerow(['student_id', 'first_name', 'last_name', 'email', 'enrollment_date', 'estimated_graduation_date'])
     # Generate and write 20 rows of fake data
     existing_ids = set()
     for _ in range(20):
